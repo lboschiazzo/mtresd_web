@@ -1,7 +1,7 @@
 /**
-* Template Name: Strategy
-* Template URL: https://bootstrapmade.com/strategy-bootstrap-agency-template/
-* Updated: Jun 06 2025 with Bootstrap v5.3.6
+* Template Name: Eventix
+* Template URL: https://bootstrapmade.com/eventix-bootstrap-events-website-template/
+* Updated: Sep 06 2025 with Bootstrap v5.3.8
 * Author: BootstrapMade.com
 * License: https://bootstrapmade.com/license/
 */
@@ -105,30 +105,39 @@
   window.addEventListener('load', aosInit);
 
   /**
-   * Init swiper sliders
+   * Countdown timer
    */
-  function initSwiper() {
-    document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
-      let config = JSON.parse(
-        swiperElement.querySelector(".swiper-config").innerHTML.trim()
-      );
+  function updateCountDown(countDownItem) {
+    const timeleft = new Date(countDownItem.getAttribute('data-count')).getTime() - new Date().getTime();
 
-      if (swiperElement.classList.contains("swiper-tab")) {
-        initSwiperWithCustomPagination(swiperElement, config);
-      } else {
-        new Swiper(swiperElement, config);
-      }
-    });
+    const days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
+
+    const daysElement = countDownItem.querySelector('.count-days');
+    const hoursElement = countDownItem.querySelector('.count-hours');
+    const minutesElement = countDownItem.querySelector('.count-minutes');
+    const secondsElement = countDownItem.querySelector('.count-seconds');
+
+    if (daysElement) daysElement.innerHTML = days;
+    if (hoursElement) hoursElement.innerHTML = hours;
+    if (minutesElement) minutesElement.innerHTML = minutes;
+    if (secondsElement) secondsElement.innerHTML = seconds;
+
   }
 
-  window.addEventListener("load", initSwiper);
+  document.querySelectorAll('.countdown').forEach(function(countDownItem) {
+    updateCountDown(countDownItem);
+    setInterval(function() {
+      updateCountDown(countDownItem);
+    }, 1000);
+  });
 
   /**
-   * Initiate glightbox
+   * Initiate Pure Counter
    */
-  const glightbox = GLightbox({
-    selector: '.glightbox'
-  });
+  new PureCounter();
 
   /**
    * Init isotope layout and filters
@@ -163,13 +172,60 @@
 
   });
 
-  /**
-   * Frequently Asked Questions Toggle
+  /*
+   * Pricing Toggle
    */
-  document.querySelectorAll('.faq-item h3, .faq-item .faq-toggle, .faq-item .faq-header').forEach((faqItem) => {
-    faqItem.addEventListener('click', () => {
-      faqItem.parentNode.classList.toggle('faq-active');
+
+  const pricingContainers = document.querySelectorAll('.pricing-toggle-container');
+
+  pricingContainers.forEach(function(container) {
+    const pricingSwitch = container.querySelector('.pricing-toggle input[type="checkbox"]');
+    const monthlyText = container.querySelector('.monthly');
+    const yearlyText = container.querySelector('.yearly');
+
+    pricingSwitch.addEventListener('change', function() {
+      const pricingItems = container.querySelectorAll('.pricing-item');
+
+      if (this.checked) {
+        monthlyText.classList.remove('active');
+        yearlyText.classList.add('active');
+        pricingItems.forEach(item => {
+          item.classList.add('yearly-active');
+        });
+      } else {
+        monthlyText.classList.add('active');
+        yearlyText.classList.remove('active');
+        pricingItems.forEach(item => {
+          item.classList.remove('yearly-active');
+        });
+      }
     });
+  });
+
+  /**
+   * Init swiper sliders
+   */
+  function initSwiper() {
+    document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
+      let config = JSON.parse(
+        swiperElement.querySelector(".swiper-config").innerHTML.trim()
+      );
+
+      if (swiperElement.classList.contains("swiper-tab")) {
+        initSwiperWithCustomPagination(swiperElement, config);
+      } else {
+        new Swiper(swiperElement, config);
+      }
+    });
+  }
+
+  window.addEventListener("load", initSwiper);
+
+  /**
+   * Initiate glightbox
+   */
+  const glightbox = GLightbox({
+    selector: '.glightbox'
   });
 
   /**
